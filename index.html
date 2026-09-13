@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>أحاديث — من نور النبوة</title>
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="أحاديث — من نور النبوة">
+    <meta property="og:description" content="اكتشف الأحاديث النبوية الشريفة بتصميم زجاجي أنيق ومميز.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <!-- مكتبة html2canvas لتحويل الكارت إلى صورة عند المشاركة -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        :root {
+            --bg-base: #0a0b10;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-gold: #fbbf24;
+            --accent-glow: rgba(251, 191, 36, 0.15);
+            --glass-bg: rgba(18, 20, 29, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --card-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.56);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Amiri', serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            position: relative;
+        }
+
+        /* خلفية الـ Aurora الضوئية المتحركة */
+        .aurora-container {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+            filter: blur(80px);
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .aurora-blob {
+            position: absolute;
+            border-radius: 50%;
+            animation: float 18s ease-in-out infinite alternate;
+        }
+
+        .blob-1 {
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, rgba(120, 53, 15, 0.45) 0%, transparent 70%);
+            top: -10%;
+            right: -10%;
+            animation-duration: 14s;
+        }
+
+        .blob-2 {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(30, 58, 138, 0.4) 0%, transparent 70%);
+            bottom: -15%;
+            left: -10%;
+            animation-duration: 20s;
+        }
+
+        .blob-3 {
+            width: 380px;
+            height: 380px;
+            background: radial-gradient(circle, rgba(180, 83, 9, 0.25) 0%, transparent 70%);
+            top: 40%;
+            left: 30%;
+            animation-duration: 16s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(40px, 60px) scale(1.1); }
+            100% { transform: translate(-30px, -20px) scale(0.95); }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 820px;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .brand {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--accent-gold);
+            letter-spacing: 1px;
+            text-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .quote-card {
+            position: relative;
+            width: 100%;
+            max-width: 520px;
+            aspect-ratio: 1 / 1;
+            padding: 40px 30px;
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: var(--card-shadow);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        .quote-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 24px;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent 60%, rgba(251,191,36,0.2));
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        .card-header-icon {
+            opacity: 0.35;
+            color: var(--accent-gold);
+        }
+
+        .quote-wrapper {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.35s ease, transform 0.35s ease;
+            width: 100%;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            overflow-y: auto;
+        }
+
+        .quote-wrapper.fading {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        #hadithText {
+            max-width: 100%;
+            color: var(--text-main);
+            font-family: 'Amiri', serif;
+            line-height: 2.1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #narrator {
+            margin-top: 14px;
+            color: var(--text-muted);
+            font-size: 15px;
+        }
+
+        #source {
+            margin-top: 4px;
+            color: var(--accent-gold);
+            font-size: 15px;
+            opacity: 0.9;
+        }
+
+        .card-footer-mark {
+            font-size: 12px;
+            color: var(--accent-gold);
+            opacity: 0.8;
+            letter-spacing: 1px;
+            padding: 2px 12px;
+            border: 1px solid rgba(251, 191, 36, 0.2);
+            border-radius: 12px;
+            background: rgba(251, 191, 36, 0.05);
+        }
+
+        .actions {
+            margin-top: 25px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 12px 24px;
+            border-radius: 99px;
+            border: 1px solid rgba(251, 191, 36, 0.4);
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.15), rgba(251, 191, 36, 0.05));
+            color: var(--text-main);
+            cursor: pointer;
+            font-family: 'Amiri', serif;
+            font-size: 16px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary {
+            border-color: var(--glass-border);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .btn svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+            transition: transform 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent-gold);
+            background: var(--accent-gold);
+            color: #000;
+            box-shadow: 0 8px 25px var(--accent-glow);
+        }
+
+        .btn:hover svg { fill: #000; }
+        .btn:active { transform: translateY(0); }
+        .btn:disabled { cursor: wait; opacity: 0.5; }
+
+        footer {
+            margin-top: 20px;
+            color: var(--text-muted);
+            font-size: 14px;
+            opacity: 0.6;
+        }
+
+        .loader {
+            width: 24px;
+            height: 24px;
+            border: 2px solid rgba(251, 191, 36, 0.2);
+            border-top-color: var(--accent-gold);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        @media (max-width: 600px) {
+            header { margin-bottom: 15px; }
+            .quote-card { max-width: 90vw; padding: 30px 20px; border-radius: 20px; }
+            .actions { margin-top: 20px; gap: 8px; }
+            .btn { padding: 10px 18px; font-size: 14px; }
+        }
+    </style>
+</head>
+
+<body dir="rtl">
+
+<div class="aurora-container">
+    <div class="aurora-blob blob-1"></div>
+    <div class="aurora-blob blob-2"></div>
+    <div class="aurora-blob blob-3"></div>
+</div>
+
+<div class="container">
+    <header>
+        <div class="brand">أحاديث نبوية</div>
+    </header>
+
+    <main>
+        <section class="quote-card" id="captureTarget">
+            <div class="card-header-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2L14.5 9.5H22L16 14L18.5 21.5L12 17L5.5 21.5L8 14L2 9.5H9.5L12 2Z"/>
+                </svg>
+            </div>
+            
+            <div class="quote-wrapper" id="quoteWrapper">
+                <div id="hadithText"><div class="loader"></div></div>
+                <div id="narrator"></div>
+                <div id="source"></div>
+            </div>
+
+            <div class="card-footer-mark" id="grade">حديث نبوي</div>
+        </section>
+
+        <div class="actions">
+            <button class="btn" id="newHadith" onclick="getRandomHadith()">
+                <svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+                <span>حديث آخر</span>
+            </button>
+            
+            <button class="btn btn-secondary" id="shareBtn" onclick="shareHadith()">
+                <svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>
+                <span>مشاركة كصورة</span>
+            </button>
+
+            <button class="btn btn-secondary" id="copyBtn" onclick="copyHadith()">
+                <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                <span id="btnTextCopy">نسخ النص</span>
+            </button>
+        </div>
+    </main>
+
+    <footer>قال رسول الله ﷺ: «بَلِّغُوا عَنِّي وَلَوْ آيَةً»</footer>
+</div>
+
+<script>
+    let allHadiths = [];
+    let lastIndex = -1;
+
+    const hadithText = document.getElementById("hadithText");
+    const narrator = document.getElementById("narrator");
+    const source = document.getElementById("source");
+    const grade = document.getElementById("grade");
+    const quoteWrapper = document.getElementById("quoteWrapper");
+    const button = document.getElementById("newHadith");
+
+    // تحميل ملف JSON
+    async function loadHadithsData() {
+        try {
+            const response = await fetch('./hadiths.json');
+            if (!response.ok) throw new Error("ملف JSON غير موجود");
+            allHadiths = await response.json();
+            getRandomHadith();
+        } catch (error) {
+            hadithText.textContent = "يرجى تشغيل المشروع عبر سيرفر محلي (Live Server) والتأكد من وجود ملف hadiths.json.";
+        }
+    }
+
+    // تعديل حجم الخط آلياً حسب طول الحديث
+    function adjustFontSize(text) {
+        const length = text.length;
+        if (length > 220) hadithText.style.fontSize = "16px";
+        else if (length > 130) hadithText.style.fontSize = "19px";
+        else if (length > 70) hadithText.style.fontSize = "22px";
+        else hadithText.style.fontSize = "26px";
+    }
+
+    function getRandomHadith() {
+        if (!allHadiths.length) return;
+
+        button.disabled = true;
+        quoteWrapper.classList.add("fading");
+
+        let randomIndex;
+        do {
+            randomIndex = Math.floor(Math.random() * allHadiths.length);
+        } while (randomIndex === lastIndex && allHadiths.length > 1);
+
+        lastIndex = randomIndex;
+        const item = allHadiths[randomIndex];
+
+        setTimeout(() => {
+            adjustFontSize(item.text);
+            hadithText.textContent = `« ${item.text} »`;
+            narrator.textContent = item.narrator ? `${item.narrator}` : "";
+            source.textContent = item.source ? `— ${item.source}` : "";
+            grade.textContent = item.grade || "حديث نبوي";
+
+            quoteWrapper.classList.remove("fading");
+            button.disabled = false;
+        }, 300);
+    }
+
+    async function copyHadith() {
+        const textToCopy = `${hadithText.textContent}\n${narrator.textContent}\nالمصدر: ${source.textContent}`;
+        try {
+            await navigator.clipboard.writeText(textToCopy);
+            const btnTextCopy = document.getElementById("btnTextCopy");
+            btnTextCopy.textContent = "تم النسخ!";
+            setTimeout(() => { btnTextCopy.textContent = "نسخ النص"; }, 2000);
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    function shareHadith() {
+        const target = document.getElementById("captureTarget");
+        const shareBtn = document.getElementById("shareBtn");
+        shareBtn.disabled = true;
+
+        html2canvas(target, { backgroundColor: null, scale: 2 }).then(canvas => {
+            const link = document.createElement("a");
+            link.download = `hadith-${Date.now()}.png`;
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+            shareBtn.disabled = false;
+        }).catch(() => {
+            shareBtn.disabled = false;
+        });
+    }
+
+    // بدء التشغيل
+    loadHadithsData();
+</script>
+
+</body>
+</html>
