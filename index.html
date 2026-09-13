@@ -415,51 +415,65 @@
         }
     }
 
-async function shareHadith() {
-    const target = document.getElementById("captureTarget");
-    const shareBtn = document.getElementById("shareBtn");
-    shareBtn.disabled = true;
+    async function shareHadith() {
+        const target = document.getElementById("captureTarget");
+        const shareBtn = document.getElementById("shareBtn");
+        shareBtn.disabled = true;
 
-    try {
-        // تحديد خلفية داكنة أثناء الالتقاط لمنع اللون الأبيض الفاقع
-        const canvas = await html2canvas(target, { 
-            backgroundColor: "#0a0b10", 
-            scale: 2 
-        });
-        
-        canvas.toBlob(async (blob) => {
-            if (!blob) {
-                shareBtn.disabled = false;
-                return;
-            }
-
-            const file = new File([blob], `hadith-${Date.now()}.png`, { type: 'image/png' });
-
-            // مشاركة الصورة فقط بدون إرسال نصوص معها
-            if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                try {
-                    await navigator.share({
-                        files: [file]
-                    });
-                } catch (shareError) {
-                    console.log('تم إلغاء المشاركة');
-                }
-            } else {
-                const link = document.createElement("a");
-                link.download = file.name;
-                link.href = URL.createObjectURL(blob);
-                link.click();
-                URL.revokeObjectURL(link.href);
-            }
+        try {
+            // التقاط الكارت بخلفية داكنة لمنع ظهور اللون الأبيض في التأثير الزجاجي
+            const canvas = await html2canvas(target, { 
+                backgroundColor: "#0a0b10", 
+                scale: 2 
+            });
             
-            shareBtn.disabled = false;
-        }, 'image/png');
+            canvas.toBlob(async (blob) => {
+                if (!blob) {
+                    shareBtn.disabled = false;
+                    return;
+                }
 
-    } catch (error) {
-        console.error('حدث خطأ أثناء المشاركة:', error);
-        shareBtn.disabled = false;
+                const file = new File([blob], `hadith-${Date.now()}.png`, { type: 'image/png' });
+
+                // 1. محاولة استخدام مشاركة الجوال المباشرة لملف الصورة دون نصوص
+                if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                    try {
+                        await navigator.share({
+                            files: [file]
+                        });
+                        shareBtn.disabled = false;
+                        return;
+                    } catch (shareError) {
+                        console.log('تم إلغاء المشاركة من المستخدم');
+                        shareBtn.disabled = false;
+                        return;
+                    }
+                }
+
+                // 2. خيار احتياطي عند غياب HTTPS أو عدم دعم مشاركة الصور المباشرة: نسخ الصورة للحافظة
+                try {
+                    await navigator.clipboard.write([
+                        new ClipboardItem({ 'image/png': blob })
+                    ]);
+                    alert("تم نسخ الصورة إلى الحافظة! يمكنك لصقها الآن في أي محادثة.");
+                } catch (clipboardError) {
+                    // 3. تنزيل الصورة كخيار أخير في حالة عدم توفر خيارات المشاركة
+                    const link = document.createElement("a");
+                    link.download = file.name;
+                    link.href = URL.createObjectURL(blob);
+                    link.click();
+                    URL.revokeObjectURL(link.href);
+                }
+                
+                shareBtn.disabled = false;
+            }, 'image/png');
+
+        } catch (error) {
+            console.error('حدث خطأ أثناء المشاركة:', error);
+            shareBtn.disabled = false;
+        }
     }
-}
+
     // بدء التشغيل
     loadHadithsData();
 </script>
